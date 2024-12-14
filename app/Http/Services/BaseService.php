@@ -7,7 +7,7 @@ class BaseService
 {
     public array $response = [];
 
-    public function sendSuccessResponseJson($result, $message, $code = Response::HTTP_OK, $totalRecords = null, $lastPage= null, $currentPage = null): \Illuminate\Http\JsonResponse
+    public function sendSuccessResponseJson($result, $message, $code = Response::HTTP_OK): \Illuminate\Http\JsonResponse
     {
         $this->response = [
             'success' => true,
@@ -15,9 +15,6 @@ class BaseService
             'data'    => $result,
             'error' => null,
             'code' => $code,
-            'total_records' => $totalRecords,
-            'last_page' => $lastPage,
-            'current_page' => $currentPage
         ];
 
         return response()->json($this->response, $code);

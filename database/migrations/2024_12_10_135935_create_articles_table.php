@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -21,7 +22,7 @@ return new class extends Migration
             $table->string('author')->nullable();
             $table->string('category')->index();
             $table->dateTime('published_at');
-            $table->string('url')->unique();
+            $table->string('url', 768)->unique();
             $table->timestamps();
         });
     }
