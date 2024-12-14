@@ -1,66 +1,98 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# News Aggregator
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+The repository contains the source code for the News Aggregator Backend API's.
 
-## About Laravel
+## Prerequisites
+**docker and docker compose installed**
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Cloning the Repository
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+To clone the repository, run the following command:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**git@github.com:SheikhGhani/news-aggregator.git**
 
-## Learning Laravel
+## Checking Out into the Project Folder
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Navigate into the project folder:
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+**cd news-aggregator**
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+**Create a .env file using the .env.example file in the root of the project directory**
 
-## Laravel Sponsors
+## Setting Up the Project
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+To set up the project using Docker Compose, run the following command:
 
-### Premium Partners
+**docker-compose up --build**
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+## Entering the App Container
 
-## Contributing
+To enter the app container and execute the bash entrypoint file, run:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+**docker exec -it news-aggregator bash**
+**bash entrypoint.sh**
 
-## Code of Conduct
+## Swagger UI Documentation
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+The Swagger UI for API documentation is available at:
 
-## Security Vulnerabilities
+**http://localhost:8080/api/documentation**
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Endpoints Implementation
 
-## License
+The application currently implements the following endpoints:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Authentication
+
+1. **POST /api/auth/register**: Register a new user.
+2. **POST /api/auth/login**: Logged in the user and returns the authetication token.
+3. **POST /api/auth/logout**: Logged Out the currently logged in user.
+
+## Article
+
+1. **GET /api/articles/**: Get all the articles with pagination and accept query param for filtering the data.
+2. **GET /api/auarticlesth/{id}**: Return the article data by id.
+
+## User Preferences
+
+1. **POST /api/preferences/**: Store the User preference.
+2. **GET /api/preferences/**: Returns all the preferences of the user
+2. **GET /api/preferences/news-feed**: Returns the personalized feed of the user based on preferences
+
+## Implementation
+
+1. When containers are up and we execute the entrypoint file inside the container these things are going to happen:
+**Database migrations to make the required schema**
+**Unit/Feature Testing by laravel package**
+**Database Seeding for demo users with default password Click@123 and Fresh Articles fetched from the news sources**
+**Generating the swagger docs**
+
+2. **Database Design**
+**Database schema is designed for efficient storage of the articles from different sources**
+**articles table for storing the articles, user_preferences table for storing the preferences, users and personal_access_tokens tables for authentication of the user**
+
+3. **Coding Architecture**
+Following is the high level information regarding the coding practices.
+**I have used the thin controller approach where all the logic resides inside the Service Class relevant to that controller to keep the controller as clean as possible**
+**I have created a separate route file for each Resourse like Artcile/UserPreference/Auth to keep the main api.php file more maintainable and clean. As the Application grows this approach helps a lot to write maintainable and clean code**
+**Created a Base Class for services to return the Success and Failure JSON response to follow a similiar response structure for all API endpoints**
+**Created the Console command and scheduled it at midnight  everyday to fetch artciles from three different sources**
+**For Request Validation I have created the Request classed to seperate the validation logic from the service class.**
+
+4. **Security**
+
+**Sanctum is used for user authentication All routes are protected by auth:sanctum except register/login routes**
+**Used Eloquent to avoid SQL injection**
+
+5. **Caching**
+
+**Used Redis for caching the data to improve the performace of the endpoints**
+
+6. **Docker**
+**Dockerized the application using docker-compose to impelement multiconatiner environment i.e app_container, mysql_container and redis_container**
+
+7. **News Sources Used**
+
+**NewsAPI**
+**New York Times**
+**The Guardian**
