@@ -94,7 +94,7 @@ class AuthService extends BaseService
      */
     public function logout($request)
     {
-        // try {
+        try {
             // Revoke all tokens for the current user
             $request->user()->tokens()->delete();
 
@@ -104,14 +104,14 @@ class AuthService extends BaseService
                 'Logged out successfully', 
                 Response::HTTP_OK
             );
-        // } catch (\Exception $e) {
-        //     // Return error response in JSON
-        //     return $this->sendErrorResponseJson(
-        //         'Logout failed', 
-        //         [$e->getMessage()], 
-        //         Response::HTTP_INTERNAL_SERVER_ERROR
-        //     );
-        // }
+        } catch (\Exception $e) {
+            // Return error response in JSON
+            return $this->sendErrorResponseJson(
+                'Logout failed', 
+                [$e->getMessage()], 
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
     }
 
     /**
