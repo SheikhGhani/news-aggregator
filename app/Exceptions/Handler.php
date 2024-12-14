@@ -47,4 +47,11 @@ class Handler extends ExceptionHandler
             //
         });
     }
+    
+    //unauthenticated function to return json response
+    protected function unauthenticated($request, \Illuminate\Auth\AuthenticationException $exception)
+    {
+        return response()->json(['error' => 'Unauthenticated'], 401);
+    }
+
 }
