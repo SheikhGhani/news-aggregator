@@ -11,13 +11,6 @@ class ArticleService extends BaseService
    {
        try {
             $cacheKey = 'articles_' . md5(json_encode($request->all()));
-            if (Cache::has($cacheKey)) {
-                $cachedData = Cache::get($cacheKey); // Retrieve cached data
-                \Log::info("Cache hit for key: {$cacheKey}");
-                \Log::info("Cached result: " . json_encode($cachedData));
-            } else {
-                \Log::info("Cache miss for key: {$cacheKey}");
-            }
             $articles = Cache::remember($cacheKey, 600, function () use ($request) {
                 $query = Article::query();
     
