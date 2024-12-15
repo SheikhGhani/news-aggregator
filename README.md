@@ -23,14 +23,15 @@ Navigate into the project folder:
 
 To set up the project using Docker Compose, run the following command:
 
-**docker-compose up --build**
+**docker-compose up --build -d**
 
 ## Entering the App Container
 
 To enter the app container and execute the bash entrypoint file, run:
 
-**docker exec -it news-aggregator bash**
-**bash entrypoint.sh**
+- **docker exec -it news-aggregator bash**
+- **bash entrypoint.sh**
+- **This command will generate the app key, run the migrations, run the Tests, seed The database with fake users and articles fetched from the sources and generate the swagger docs.**
 
 ## Swagger UI Documentation
 
@@ -96,3 +97,6 @@ Following is the high level information regarding the coding practices.
 - **NewsAPI**
 - **New York Times**
 - **The Guardian**
+
+8. **Stopping the containers**
+- **docker-compose down -v will stop and remove all the containers,volumes and networks**

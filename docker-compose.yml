@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: news_aggregator
+    container_name: news-aggregator
     ports:
       - "8080:80"  # Map port 8080 on the host to port 80 on the container
     environment:
