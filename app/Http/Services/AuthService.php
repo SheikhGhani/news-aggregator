@@ -113,37 +113,28 @@ class AuthService extends BaseService
             );
         }
     }
-
     /**
      * Password reset request.
-     */
-    public function passwordReset($request)
+    */
+    public function forgotPassword($request)
     {
         try {
-            // Validate the incoming request
+            // Validate the incoming request using the request class
             $payload = $request->validated();
 
-            // Send the reset link
-            $status = Password::sendResetLink($payload);
+            // Send the password reset link
+            Password::sendResetLink($payload);
 
-            // Check the status and return appropriate response
-            if ($status === Password::RESET_LINK_SENT) {
-                return $this->sendSuccessResponseJson(
-                    null, 
-                    'Reset link sent', 
-                    Response::HTTP_OK
-                );
-            }
-
-            return $this->sendErrorResponseJson(
-                'Unable to send reset link', 
-                [], 
-                Response::HTTP_BAD_REQUEST
+            // Return success response in JSON
+            return $this->sendSuccessResponseJson(
+                null, 
+                'Password reset link sent successfully', 
+                Response::HTTP_OK
             );
         } catch (\Exception $e) {
-            // Return error response from the BaseService
+            // Return error response in JSON
             return $this->sendErrorResponseJson(
-                'Password reset failed', 
+                'Failed to send password reset link', 
                 [$e->getMessage()], 
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
