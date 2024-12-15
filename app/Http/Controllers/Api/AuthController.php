@@ -25,28 +25,46 @@ class AuthController extends BaseController
      *     path="/api/auth/register",
      *     tags={"Authentication"},
      *     summary="Register a new user",
+     *     description="Register a new user and return the user's details upon successful registration.",
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
      *             required={"name", "email", "password", "password_confirmation"},
      *             @OA\Property(property="name", type="string", example="John Doe"),
      *             @OA\Property(property="email", type="string", example="john@example.com"),
-     *             @OA\Property(property="password", type="string", example="password"),
-     *             @OA\Property(property="password_confirmation", type="string", example="password")
+     *             @OA\Property(property="password", type="string", format="password", example="password"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password", example="password")
      *         )
      *     ),
      *     @OA\Response(
      *         response=201,
      *         description="User registered successfully",
      *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="User registered successfully")
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="User registered successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="name", type="string", example="John Doe"),
+     *                 @OA\Property(property="email", type="string", example="john@example.com"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2024-12-15T20:21:08.000000Z"),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2024-12-15T20:21:08.000000Z"),
+     *                 @OA\Property(property="id", type="integer", example=23)
+     *             ),
+     *             @OA\Property(property="error", type="string", nullable=true, example=null),
+     *             @OA\Property(property="code", type="integer", example=201)
      *         )
      *     ),
      *     @OA\Response(
-     *         response=400,
-     *         description="Validation error",
+     *         response=500,
+     *         description="Internal server error",
      *         @OA\JsonContent(
-     *             @OA\Property(property="error", type="string", example="Validation failed")
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Internal server error"),
+     *             @OA\Property(property="error", type="string", example="Server error"),
+     *             @OA\Property(property="code", type="integer", example=500)
      *         )
      *     )
      * )
@@ -60,27 +78,61 @@ class AuthController extends BaseController
      *     path="/api/auth/login",
      *     tags={"Authentication"},
      *     summary="Login a user",
+     *     description="Authenticate a user and return their details along with an access token upon successful login.",
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
      *             required={"email", "password"},
      *             @OA\Property(property="email", type="string", example="john@example.com"),
-     *             @OA\Property(property="password", type="string", example="password")
+     *             @OA\Property(property="password", type="string", format="password", example="password")
      *         )
      *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Login successful",
      *         @OA\JsonContent(
-     *             @OA\Property(property="access_token", type="string", example="abc123xyz456"),
-     *             @OA\Property(property="token_type", type="string", example="Bearer")
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Login successful"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="user",
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=22),
+     *                     @OA\Property(property="name", type="string", example="John Doe"),
+     *                     @OA\Property(property="email", type="string", example="john@example.com"),
+     *                     @OA\Property(property="email_verified_at", type="string", format="date-time", nullable=true, example=null),
+     *                     @OA\Property(property="created_at", type="string", format="date-time", example="2024-12-15T18:19:16.000000Z"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time", example="2024-12-15T18:19:16.000000Z")
+     *                 ),
+     *                 @OA\Property(property="token", type="string", example="11|HrUMnABTk5nb8RJrMq538J4xPEJnrVxGL8vm2f0vb4269a81")
+     *             ),
+     *             @OA\Property(property="error", type="string", nullable=true, example=null),
+     *             @OA\Property(property="code", type="integer", example=200)
      *         )
      *     ),
      *     @OA\Response(
      *         response=401,
      *         description="Unauthorized",
      *         @OA\JsonContent(
-     *             @OA\Property(property="error", type="string", example="Invalid credentials")
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Invalid credentials"),
+     *             @OA\Property(property="error", type="string", example="Invalid credentials"),
+     *             @OA\Property(property="code", type="integer", example=401)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Internal server error"),
+     *             @OA\Property(property="error", type="string", example="Server error"),
+     *             @OA\Property(property="code", type="integer", example=500)
      *         )
      *     )
      * )
@@ -94,27 +146,31 @@ class AuthController extends BaseController
      *     path="/api/auth/logout",
      *     tags={"Authentication"},
      *     summary="Logout a user",
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"token"},
-     *             @OA\Property(property="token", type="string", example="abc123xyz456")
-     *         )
-     *     ),
+     *     description="Logs out the authenticated user by revoking their token.",
      *     @OA\Response(
      *         response=200,
      *         description="Logout successful",
      *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="User logged out successfully")
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Logged out successfully"),
+     *             @OA\Property(property="data", type="string", nullable=true, example=null),
+     *             @OA\Property(property="error", type="string", nullable=true, example=null),
+     *             @OA\Property(property="code", type="integer", example=200)
      *         )
      *     ),
      *     @OA\Response(
-     *         response=400,
-     *         description="Bad Request",
+     *         response=500,
+     *         description="Internal server error",
      *         @OA\JsonContent(
-     *             @OA\Property(property="error", type="string", example="Token missing or invalid")
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Internal server error"),
+     *             @OA\Property(property="error", type="string", example="Server error"),
+     *             @OA\Property(property="code", type="integer", example=500)
      *         )
-     *     )
+     *     ),
+     *     security={{"sanctum":{}}}
      * )
      */
     public function logout(Request $request)
@@ -127,7 +183,7 @@ class AuthController extends BaseController
      *     path="/api/auth/forgot-password",
      *     tags={"Authentication"},
      *     summary="Request a password reset",
-     *     description="Initiates a password reset process for the user. The endpoint validates the user's email and creates a password reset token. Currently, no email is sent.",
+     *     description="Initiates a password reset process for the user by validating their email. Currently, no email is sent.",
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -143,22 +199,22 @@ class AuthController extends BaseController
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Password reset request created successfully",
+     *         description="Password reset link sent successfully",
      *         @OA\JsonContent(
+     *             type="object",
      *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="Password reset request created successfully"),
-     *             @OA\Property(
-     *                 property="data",
-     *                 type="object",
-     *                 @OA\Property(property="email", type="string", example="user@example.com"),
-     *                 @OA\Property(property="token", type="string", example="random-generated-token")
-     *             )
+     *             @OA\Property(property="message", type="string", example="Password reset link sent successfully"),
+     *             @OA\Property(property="data", type="null", example=null),
+     *             @OA\Property(property="error", type="null", example=null),
+     *             @OA\Property(property="code", type="integer", example=200)
      *         )
      *     ),
      *     @OA\Response(
      *         response=422,
      *         description="Validation error",
      *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=false),
      *             @OA\Property(property="message", type="string", example="The email field is required."),
      *             @OA\Property(
      *                 property="errors",
@@ -172,21 +228,15 @@ class AuthController extends BaseController
      *         )
      *     ),
      *     @OA\Response(
-     *         response=404,
-     *         description="User not found",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="No user found with this email."),
-     *             @OA\Property(property="data", type="null", example=null)
-     *         )
-     *     ),
-     *     @OA\Response(
      *         response=500,
      *         description="Internal server error",
      *         @OA\JsonContent(
+     *             type="object",
      *             @OA\Property(property="success", type="boolean", example=false),
      *             @OA\Property(property="message", type="string", example="An unexpected error occurred."),
-     *             @OA\Property(property="data", type="null", example=null)
+     *             @OA\Property(property="data", type="null", example=null),
+     *             @OA\Property(property="error", type="null", example=null),
+     *             @OA\Property(property="code", type="integer", example=500)
      *         )
      *     )
      * )
