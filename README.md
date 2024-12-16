@@ -17,7 +17,8 @@ Navigate into the project folder:
 
 **cd news-aggregator**
 
-**Create a .env file using the .env.example file in the root of the project directory**
+- **Create a .env file using the .env.example file in the root of the project directory**
+- **.env credentials which includes API KEYS will be provided by the developer**
 
 ## Setting Up the Project
 
